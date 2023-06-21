@@ -1,6 +1,6 @@
 ohbot
 lxml
-pyfestival
+#pyfestival
 openai
 gTTS
 pyaudio
