@@ -1,0 +1,7 @@
+ohbot
+lxml
+#pyfestival
+openai
+gTTS
+pyaudio
+comtypes

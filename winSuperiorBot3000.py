@@ -5,8 +5,6 @@ The chatbot uses openai to generate a response to the user's input.
 '''
 import openai
 from ohbot import ohbot
-ohbot.synthesizer = "gTTS"
-ohbot.init()
 import json
 import threading
 import random
@@ -42,7 +40,7 @@ def speak(text):
 
     cleaned_text = text
 
-    print (text)
+    # print (text)
     print (cleaned_text)
     ohbot.say(cleaned_text)
     add_utterance(text, True)    
@@ -264,17 +262,28 @@ def transcribe_audio():
     return transcript.get('text')
 
 def get_user_input():
+    setEyesToGreen()
     record_user()
 
+    setEyesToRed()
     user_input = transcribe_audio()
 
     print(f"User said: {user_input}")
 
     return user_input
 
+def setEyesToRed():
+    ohbot.setEyeColour(0,10,0)
+
+def setEyesToGreen():
+    ohbot.setEyeColour(10,0,0)
+
+def setEyesToWhite():
+    ohbot.setEyeColour(10,10,10)
+
 def main():
     ohbot.reset()
-    ohbot.setEyeColour(10,10,10)
+    setEyesToWhite()
 
     # read credentials from file
     with open("credentials.json", "r") as f:
@@ -288,10 +297,10 @@ def main():
     stopf()
 
     speak(greeting)
-    
+
     user_input = get_user_input()
     add_utterance(user_input, False)
-    ohbot.ejo_play_silence()
+    # ohbot.ejo_play_silence()
 
     try:
         while not user_input.lower() in ["quit", "exit", "bye", "goodbye", "quit.", "exit.", "bye.", "goodbye."]:
@@ -302,7 +311,7 @@ def main():
 
             user_input = get_user_input()
             add_utterance(user_input, False)
-            ohbot.ejo_play_silence()
+            # ohbot.ejo_play_silence()
     except Exception as e:
         speak("My brain hurts. I had the following error: " + str(e))
     finally:
