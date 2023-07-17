@@ -22,6 +22,12 @@ def add_utterance(text, isbot):
     '''
     C_UTTERANCES.append({"text": text, "isbot": isbot})
 
+def clear_utterances():
+    '''
+    Clears the list of utterances.
+    '''
+    C_UTTERANCES.clear()
+
 def speak(text):
     '''
     Speaks the text.
@@ -57,7 +63,7 @@ your responses, like boop and beep and bop bip.
 def generate_greeting():
     prompt = f'''{bot_description()}
 
-This is the beginning of the conversation. Please provide an interesting greeting.'''
+This is the beginning of the conversation. Please provide an interesting greeting. Try to keep the greeting to under 150 words.'''
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -76,7 +82,7 @@ This is the beginning of the conversation. Please provide an interesting greetin
 def generate_valediction():
     prompt = f'''{bot_description()}
 
-This is the end of the conversation. Please provide an interesting valediction.'''
+This is the end of the conversation. Please provide an interesting valediction. Try to keep the valediction to less than 150 words.'''
 
     # need to include the chat history
     response = openai.ChatCompletion.create(
@@ -94,7 +100,7 @@ This is the end of the conversation. Please provide an interesting valediction.'
             for utterance in C_UTTERANCES[-100:]
         ],
         temperature=0.7,
-        max_tokens=3000
+        max_tokens=250
     )
 
     return response['choices'][0]['message']['content']
@@ -118,7 +124,7 @@ def generate_response():
     '''
     prompt = f'''{bot_description()}
 
-Please provide a response to the human.'''
+Please provide a response to the human. Try to keep the response to 150 words or less.'''
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -135,7 +141,7 @@ Please provide a response to the human.'''
             for utterance in C_UTTERANCES[-100:]
         ],
         temperature=0.7,
-        max_tokens=3000
+        max_tokens=250
     )
 
     bot_response = response['choices'][0]['message']['content']
@@ -313,7 +319,9 @@ def main():
             add_utterance(user_input, False)
             # ohbot.ejo_play_silence()
     except Exception as e:
+        print (e)
         speak("My brain hurts. I had the following error: " + str(e))
+        clear_utterances()
     finally:
         stopf = start_flashing_eyes()
         valediction = generate_valediction()
